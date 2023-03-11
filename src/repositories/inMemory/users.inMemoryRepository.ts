@@ -8,6 +8,16 @@ export class UsersInMemoryRepository implements IUsersRepository {
         return this.users;
     }
 
+    findByEmail(email: string): IUser | null{
+        const user = this.users.filter( user => user.email === email);
+
+        if(!user){
+            return null
+        }
+
+        return user[0]
+    }
+
     store(userData: IUser): IUser | Error{
         const emailAlreadyTaken = this.users.find( user => user.email === userData.email)
 

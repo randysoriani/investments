@@ -7,5 +7,6 @@ export interface IUser {
 
 export interface IUsersRepository {
     findAll(): IUser[];
+    findByEmail(email: string): IUser | null;
     store(user: IUser): IUser | Error;
 }
