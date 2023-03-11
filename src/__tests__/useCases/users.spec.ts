@@ -11,7 +11,8 @@ describe('Users', () => {
         const sut = new CreateNewUserUseCase(userRepository);
         const response = await sut.execute({
             name: "John Doe",
-            email: 'johndoe@mail.com'
+            email: 'johndoe@mail.com',
+            password: 'change123'
         })
         expect(response).toHaveProperty('id');
     })
@@ -29,7 +30,8 @@ describe('Users', () => {
         const sut = new GetUserByEmailUseCase(userRepository);
         await newUser.execute({
             name: "John Doe",
-            email: 'valid@mail.com'
+            email: 'valid@mail.com',
+            password: 'change123'
         })
 
         const user = await sut.execute('valid@mail.com');
@@ -38,6 +40,17 @@ describe('Users', () => {
 
 
     // bad cases
+    it('Should fail to create new user if params is missing', async () => {
+        const userRepository = new UsersInMemoryRepository();
+        const sut = new CreateNewUserUseCase(userRepository);
+        const response = await sut.execute({
+            name: "User 1",
+            email: 'johndoe@mail.com'
+        })
+
+        expect(response).toBeInstanceOf(Error)
+    })
+
     it('Should return error if email is already in use', async () => {
         const userRepository = new UsersInMemoryRepository();
         const sut = new CreateNewUserUseCase(userRepository);
