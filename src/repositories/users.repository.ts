@@ -7,4 +7,5 @@ export interface IUser {
 
 export interface IUsersRepository {
     findAll(): IUser[];
+    store(user: IUser): IUser | Error;
 }
