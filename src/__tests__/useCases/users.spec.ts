@@ -35,4 +35,21 @@ describe('Users', () => {
         const user = await sut.execute('valid@mail.com');
         expect(user).toHaveProperty('id')
     })
+
+
+    // bad cases
+    it('Should return error if email is already in use', async () => {
+        const userRepository = new UsersInMemoryRepository();
+        const sut = new CreateNewUserUseCase(userRepository);
+        await sut.execute({
+            name: "User 1",
+            email: 'johndoe@mail.com'
+        })
+
+        const response = await sut.execute({
+            name: "User 2",
+            email: 'johndoe@mail.com'
+        })
+        expect(response).toBeInstanceOf(Error)
+    })
 })
