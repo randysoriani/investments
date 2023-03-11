@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { EmailAlreadyTakenError } from '../../errors/EmailAlreadyTakenError';
+import { MissingParamsError } from '../../errors/MissingParamsError';
 import { UsersInMemoryRepository } from '../../repositories/inMemory/users.inMemoryRepository';
 import { CreateNewUserUseCase } from '../../useCases/createNewUserUseCase';
 import { GetAllUsersUseCase } from '../../useCases/getAllUsersUseCase';
@@ -48,7 +50,7 @@ describe('Users', () => {
             email: 'johndoe@mail.com'
         })
 
-        expect(response).toBeInstanceOf(Error)
+        expect(response).toBeInstanceOf(MissingParamsError)
     })
 
     it('Should return error if email is already in use', async () => {
@@ -56,13 +58,15 @@ describe('Users', () => {
         const sut = new CreateNewUserUseCase(userRepository);
         await sut.execute({
             name: "User 1",
-            email: 'johndoe@mail.com'
+            email: 'johndoe@mail.com',
+            password: 'change123'
         })
 
         const response = await sut.execute({
             name: "User 2",
-            email: 'johndoe@mail.com'
+            email: 'johndoe@mail.com',
+            password: 'change123'
         })
-        expect(response).toBeInstanceOf(Error)
+        expect(response).toBeInstanceOf(EmailAlreadyTakenError)
     })
 })

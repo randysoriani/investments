@@ -1,3 +1,5 @@
+import { EmailAlreadyTakenError } from "../errors/EmailAlreadyTakenError";
+import { MissingParamsError } from "../errors/MissingParamsError";
 import { IUser, IUsersRepository } from "../repositories/users.repository";
 
 export class CreateNewUserUseCase{
@@ -6,12 +8,12 @@ export class CreateNewUserUseCase{
     async execute(userData: IUser): Promise<IUser | Error>{
 
         if(!userData.email || !userData.name || !userData.password){
-            return new Error('MissingParams');
+            return new MissingParamsError('Mandatory parameters not found');
         }
 
         const emailAlreadyTaken = await this.userRepository.findByEmail(userData.email);
         if(emailAlreadyTaken){
-            return new Error('EmailAlreadyTaken');
+            return new EmailAlreadyTakenError('The informed email is already in use');
         }
         const response = await this.userRepository.store(userData);
         return response;
